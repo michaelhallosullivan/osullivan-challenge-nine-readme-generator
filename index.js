@@ -1,7 +1,6 @@
-// TODO: Include packages needed for this application
 const inquirer = require("inquirer");
 const fs = require("fs");
-// TODO: Create an array of questions for user input
+
 const questions = [
     "What type of license would you like to include in your project?", 
     "What is the title of your project?",
@@ -11,53 +10,88 @@ const questions = [
     "Any packages, frameworks, people, or other sources you would like to credit in your project?"
 ];
 
-let answers = [];
+class Data {
+    constructor (license, title, description, installation, usage, credits) {
+    this.license = license,
+    this.title = title;
+    this.description = description;
+    this.installation = installation
+    this.usage = usage;
+    this.credits = credits;
+    };
+};
+
+let data = "";
+
+let readMe = "";
+
+function writeToFile() {
+    fs.writeFile("README.md", readMe, (err) =>
+    err ? console.error(err) : console.log("Generated README.md")
+    );
+};
+
+function init() {
+    readMe = 
+`# ${data.title}
+    
+## Description
+    
+${data.description}
+    
+## Installation
+    
+${data.installation}
+    
+## Usage
+    
+${data.usage}
+    
+## Credits
+    
+${data.credits}
+    
+## License
+    
+${data.license}`;
+};
 
 inquirer
-  .prompt([
-    {
-        type: "list",
-        message: questions[0],
-        name: "license",
-        choices: ["GNU", "MIT", "BSD", "Apache"],
-    },
-    {
-        type: "input",
-        message: questions[1],
-        name: "title",
-    },
-    {
-        type: "input",
-        message: questions[2],
-        name: "description",
-    },
-    {
-        type: "input",
-        message: questions[3],
-        name: "installation",
-    },
-    {
-        type: "input",
-        message: questions[4],
-        name: "usage",
-    },
-    {
-        type: "input",
-        message: questions[5],
-        name: "credits",
-    },
-  ])
-  .then((response) => {
-    answers = [response.license, response.title, response.description, response.installation, response.usage, response.credits];
+    .prompt([
+        {
+            type: "list",
+            message: questions[0],
+            name: "license",
+            choices: ["GNU", "MIT", "BSD", "Apache"],
+        },
+        {
+            type: "input",
+            message: questions[1],
+            name: "title",
+        },
+        {
+            type: "input",
+            message: questions[2],
+            name: "description",
+        },
+        {
+            type: "input",
+            message: questions[3],
+            name: "installation",
+        },
+        {
+            type: "input",
+            message: questions[4],
+            name: "usage",
+        },
+        {
+            type: "input",
+            message: questions[5],
+            name: "credits",
+        },
+    ])
+    .then((response) => {
+        data = new Data(response.license, response.title, response.description, response.installation, response.usage, response.credits);
+        init();
+        writeToFile();
 });
-
-
-
-// TODO: Create a function to write README file
-function writeToFile(fileName, data) {}
-
-// TODO: Create a function to initialize app
-function init() {}
-
-// Function call to initialize app
-init();
