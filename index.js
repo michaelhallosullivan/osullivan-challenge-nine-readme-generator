@@ -32,6 +32,22 @@ function writeToFile() {
 };
 
 function init() {
+    let license = "";
+    function checkLicense() {
+        if (data.license === "GNU GPL v3") {
+            license = `[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)`
+        }
+        else if (data.license === "The MIT License") {
+            license = `[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)`
+        }
+        else if (data.license === "BSD 3-Clause License") {
+            license = `[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)`
+        }
+        else if (data.license === "Apache 2.0 License") {
+            license = `[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)`
+        }
+    };
+    checkLicense();
     readMe = 
 `# ${data.title}
     
@@ -52,8 +68,9 @@ ${data.usage}
 ${data.credits}
     
 ## License
-    
-${data.license}`;
+
+${data.license}
+${license}`;
 };
 
 inquirer
@@ -62,7 +79,7 @@ inquirer
             type: "list",
             message: questions[0],
             name: "license",
-            choices: ["GNU", "MIT", "BSD", "Apache"],
+            choices: ["GNU GPL v3", "The MIT License", "BSD 3-Clause License", "Apache 2.0 License"],
         },
         {
             type: "input",
