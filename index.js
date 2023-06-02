@@ -1,23 +1,30 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
+const emailValidator = require('email-validator');
 
-const questions = [
-    "What type of license would you like to include in your project?", 
+const questions = [ 
     "What is the title of your project?",
     "How would you describe the purpose of your project?",
     "Any special instructions for installing your application/project?",
     "How would you describe the usage of your project?",
-    "Any packages, frameworks, people, or other sources you would like to credit in your project?"
+    "What type of license would you like to include in your project?",
+    "Any packages, frameworks, people, or other sources you would like to contribute to your project?",
+    "Are there any tests associated with your project? How would you go about implementing them?",
+    "What is your Github username?",
+    "What is your e-mail address?"
 ];
 
 class Data {
-    constructor (license, title, description, installation, usage, credits) {
-    this.license = license,
-    this.title = title;
-    this.description = description;
-    this.installation = installation
-    this.usage = usage;
-    this.credits = credits;
+    constructor (title, description, installation, usage, license, contributing, tests, username, email) {
+        this.title = title;
+        this.description = description;
+        this.installation = installation;
+        this.usage = usage;
+        this.license = license,
+        this.contributing = contributing;
+        this.tests = tests;
+        this.username = username;
+        this.email = email;
     };
 };
 
@@ -50,10 +57,22 @@ function init() {
     checkLicense();
     readMe = 
 `# ${data.title}
-    
+${license}
+
 ## Description
     
 ${data.description}
+
+## Table of Contents
+
+1. [Installation](#installation)
+2. [Usage](#usage)
+3. [License](#license)
+4. [Contributing](#contributing)
+5. [Tests](#tests)
+6. [Questions](#questions)
+    1. [Github](#github-profile)
+    2. [E-mail](#e-mail-address)
     
 ## Installation
     
@@ -62,53 +81,79 @@ ${data.installation}
 ## Usage
     
 ${data.usage}
-    
-## Credits
-    
-${data.credits}
-    
+
 ## License
 
 ${data.license}
-${license}`;
+    
+## Contributing
+    
+${data.contributing}
+    
+## Tests
+    
+${data.tests}
+
+## Questions
+### Github Profile
+https://github.com/${data.username}
+### E-mail Address
+${data.email}
+`;
 };
 
 inquirer
     .prompt([
         {
-            type: "list",
+            type: "input",
             message: questions[0],
+            name: "title",
+        },
+        {
+            type: "input",
+            message: questions[1],
+            name: "description",
+        },
+        {
+            type: "input",
+            message: questions[2],
+            name: "installation",
+        },
+        {
+            type: "input",
+            message: questions[3],
+            name: "usage",
+        },
+        {
+            type: "list",
+            message: questions[4],
             name: "license",
             choices: ["GNU GPL v3", "The MIT License", "BSD 3-Clause License", "Apache 2.0 License"],
         },
         {
             type: "input",
-            message: questions[1],
-            name: "title",
-        },
-        {
-            type: "input",
-            message: questions[2],
-            name: "description",
-        },
-        {
-            type: "input",
-            message: questions[3],
-            name: "installation",
-        },
-        {
-            type: "input",
-            message: questions[4],
-            name: "usage",
-        },
-        {
-            type: "input",
             message: questions[5],
-            name: "credits",
+            name: "contributing",
+        },
+        {
+            type: "input",
+            message: questions[6],
+            name: "tests",
+        },
+        {
+            type: "input",
+            message: questions[7],
+            name: "username",
+        },
+        {
+            type: "input",
+            message: questions[8],
+            name: "email",
+            validate: emailValidator.validate,
         },
     ])
     .then((response) => {
-        data = new Data(response.license, response.title, response.description, response.installation, response.usage, response.credits);
+        data = new Data(response.title, response.description, response.installation, response.usage, response.license, response.contributing, response.tests, response.username, response.email);
         init();
         writeToFile();
 });
